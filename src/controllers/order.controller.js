@@ -75,8 +75,26 @@ const orderHistory = async (req, res) => {
   }
 };
 
+
+// controllers/orderController.js
+const getOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const orders = await orderService.getOrdersByUser(userId);
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createOrder,
   findOrderById,
   orderHistory,
+  getOrdersByUser
 };

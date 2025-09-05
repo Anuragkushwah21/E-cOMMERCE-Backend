@@ -197,6 +197,26 @@ async function deleteOrder(orderId) {
   }
 }
 
+// ✅ Get all orders by user ID
+async function getOrdersByUser (userId){
+  try {
+    const orders = await Order.find({ user: userId })
+      .populate({
+        path: "orderItems",
+        populate: { path: "product" },
+      })
+      .populate("user")
+      .populate("shippingAddress")
+      .lean();
+
+    return orders;
+  } catch (error) {
+    console.error("❌ Error in getOrdersByUserService:", error.message);
+    throw new Error("Fetching user orders failed.");
+  }
+};
+
+
 module.exports = {
   createOrder,
   placedOrder,
@@ -207,5 +227,6 @@ module.exports = {
   findOrderById,
   usersOrderHistory,
   deleteOrder,
-  getAllOrders
+  getAllOrders,
+  getOrdersByUser
 };
